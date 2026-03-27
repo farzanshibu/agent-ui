@@ -4,25 +4,79 @@
 
 @layer base {
   :root {
-    --color-border-default: 255, 255, 255, 0.2;
-    --scrollbar-width: 0.1rem;
+    --background: 210 40% 98%;
+    --foreground: 224 71% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71% 4%;
+    --primary: 217 82% 46%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 216 34% 94%;
+    --accent-foreground: 224 71% 4%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 88%;
+    --input: 214 32% 88%;
+    --ring: 217 82% 46%;
+    --radius: 1rem;
+    --scrollbar-width: 0.45rem;
+  }
+
+  .dark {
+    --background: 222 47% 8%;
+    --foreground: 213 31% 91%;
+    --card: 224 39% 11%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 39% 11%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 217 82% 56%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 222 24% 17%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 223 23% 15%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 223 23% 17%;
+    --accent-foreground: 213 31% 91%;
+    --destructive: 0 62% 46%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 223 23% 19%;
+    --input: 223 23% 19%;
+    --ring: 217 82% 56%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background/80 text-secondary;
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at top, hsl(var(--primary) / 0.12), transparent 24%),
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)));
+  }
+
+  code {
+    @apply rounded bg-muted px-1.5 py-0.5 font-dmmono text-[0.9em];
   }
 }
 
 ::-webkit-scrollbar {
   width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-thumb {
-  --tw-border-opacity: 1;
   @apply bg-border;
-  border-color: rgba(255, 255, 255, var(--tw-border-opacity));
   border-radius: 9999px;
-  border-width: 1px;
 }
 
 ::-webkit-scrollbar-track {

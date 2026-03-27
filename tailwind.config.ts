@@ -11,26 +11,56 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#FAFAFA',
-        primaryAccent: '#18181B',
-        brand: '#FF4017',
-        background: {
-          DEFAULT: '#111113',
-          secondary: '#27272A'
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))'
         },
-        secondary: '#f5f5f5',
-        border: 'rgba(var(--color-border-default))',
-        accent: '#27272A',
-        muted: '#A1A1AA',
-        destructive: '#E53935',
-        positive: '#22C55E'
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))'
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))'
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))'
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))'
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))'
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))'
+        },
+        success: '#059669',
+        warning: '#D97706',
+        danger: '#DC2626',
+        brand: '#1A56DB',
+        positive: '#22C55E',
+        primaryAccent: '#0b1220',
+        'background-secondary': 'hsl(var(--muted))'
       },
       fontFamily: {
         geist: 'var(--font-geist-sans)',
         dmmono: 'var(--font-dm-mono)'
       },
       borderRadius: {
-        xl: '10px'
+        xl: 'var(--radius)',
+        lg: 'calc(var(--radius) - 2px)',
+        md: 'calc(var(--radius) - 4px)',
+        sm: 'calc(var(--radius) - 6px)'
       }
     }
   },

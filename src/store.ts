@@ -11,6 +11,8 @@ import {
 interface Store {
   hydrated: boolean
   setHydrated: () => void
+  sidebarOpen: boolean
+  setSidebarOpen: (sidebarOpen: boolean) => void
   streamingErrorMessage: string
   setStreamingErrorMessage: (streamingErrorMessage: string) => void
   endpoints: {
@@ -61,6 +63,8 @@ export const useStore = create<Store>()(
     (set) => ({
       hydrated: false,
       setHydrated: () => set({ hydrated: true }),
+      sidebarOpen: true,
+      setSidebarOpen: (sidebarOpen) => set(() => ({ sidebarOpen })),
       streamingErrorMessage: '',
       setStreamingErrorMessage: (streamingErrorMessage) =>
         set(() => ({ streamingErrorMessage })),
@@ -81,10 +85,14 @@ export const useStore = create<Store>()(
             typeof messages === 'function' ? messages(state.messages) : messages
         })),
       chatInputRef: { current: null },
-      selectedEndpoint: 'http://localhost:7777',
+      selectedEndpoint:
+        process.env.NEXT_PUBLIC_AGENTOS_URL || 'http://localhost:7777',
       setSelectedEndpoint: (selectedEndpoint) =>
         set(() => ({ selectedEndpoint })),
-      authToken: '',
+      authToken:
+        process.env.NEXT_PUBLIC_API_TOKEN ||
+        process.env.NEXT_PUBLIC_OS_SECURITY_KEY ||
+        '',
       setAuthToken: (authToken) => set(() => ({ authToken })),
       agents: [],
       setAgents: (agents) => set({ agents }),
@@ -110,7 +118,9 @@ export const useStore = create<Store>()(
       name: 'endpoint-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        selectedEndpoint: state.selectedEndpoint
+        selectedEndpoint: state.selectedEndpoint,
+        authToken: state.authToken,
+        sidebarOpen: state.sidebarOpen
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHydrated?.()
