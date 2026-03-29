@@ -56,7 +56,7 @@ export function FilterChip({ label, onRemove }: FilterChipProps) {
       <button
         type="button"
         onClick={onRemove}
-        className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-muted/40"
+        className="hover:bg-muted/40 ml-0.5 rounded-full p-0.5 transition-colors"
         aria-label={`Remove filter: ${label}`}
       >
         <X className="h-3 w-3" />
@@ -76,6 +76,10 @@ export function AdvancedFilterBuilder({
   isLoading = false
 }: AdvancedFilterBuilderProps) {
   const [collapsed, setCollapsed] = useState(false)
+  const uniqueSchema = schema.filter(
+    (field, index, fields) =>
+      fields.findIndex((candidate) => candidate.name === field.name) === index
+  )
 
   const activeCount = clauses.filter((c) => c.field && c.value).length
 
@@ -92,7 +96,9 @@ export function AdvancedFilterBuilder({
 
   const removeClause = (idx: number) => {
     const next = clauses.filter((_, i) => i !== idx)
-    onClausesChange(next.length ? next : [{ field: '', operator: '', value: '' }])
+    onClausesChange(
+      next.length ? next : [{ field: '', operator: '', value: '' }]
+    )
   }
 
   const removeByIndex = (idx: number) => {
@@ -117,8 +123,8 @@ export function AdvancedFilterBuilder({
             <SelectValue placeholder="Value" />
           </SelectTrigger>
           <SelectContent>
-            {meta.values.map((v) => (
-              <SelectItem key={v} value={v}>
+            {meta.values.map((v, valueIndex) => (
+              <SelectItem key={`${v}-${valueIndex}`} value={v}>
                 {v}
               </SelectItem>
             ))}
@@ -146,8 +152,8 @@ export function AdvancedFilterBuilder({
         onClick={() => setCollapsed((p) => !p)}
         className="flex w-full items-center gap-2 text-left"
       >
-        <Filter className="h-4 w-4 text-muted-foreground" />
-        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        <Filter className="text-muted-foreground h-4 w-4" />
+        <span className="text-muted-foreground text-xs uppercase tracking-[0.18em]">
           Filters
         </span>
         {activeCount > 0 && (
@@ -159,7 +165,7 @@ export function AdvancedFilterBuilder({
 
       {/* Builder rows */}
       {!collapsed && (
-        <div className="space-y-2 rounded-2xl border bg-muted/10 p-4">
+        <div className="bg-muted/10 space-y-2 rounded-2xl border p-4">
           {clauses.map((clause, idx) => (
             <div key={idx} className="flex flex-wrap items-center gap-2">
               {/* AND / OR badge between rows */}
@@ -193,7 +199,7 @@ export function AdvancedFilterBuilder({
                   <SelectValue placeholder="Field" />
                 </SelectTrigger>
                 <SelectContent>
-                  {schema.map((f) => (
+                  {uniqueSchema.map((f) => (
                     <SelectItem key={f.name} value={f.name}>
                       {f.name}
                     </SelectItem>
@@ -210,13 +216,13 @@ export function AdvancedFilterBuilder({
                   <SelectValue placeholder="Operator" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(fieldMeta(clause.field)?.operators ?? DEFAULT_OPERATORS).map(
-                    (op) => (
-                      <SelectItem key={op} value={op}>
-                        {op}
-                      </SelectItem>
-                    )
-                  )}
+                  {(
+                    fieldMeta(clause.field)?.operators ?? DEFAULT_OPERATORS
+                  ).map((op) => (
+                    <SelectItem key={op} value={op}>
+                      {op}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
@@ -264,7 +270,9 @@ export function AdvancedFilterBuilder({
                 className="rounded-2xl text-xs"
                 disabled={isLoading}
               >
-                {isLoading && <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />}
+                {isLoading && (
+                  <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
+                )}
                 Apply
               </Button>
             </div>

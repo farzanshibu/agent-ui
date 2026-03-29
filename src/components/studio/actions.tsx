@@ -822,7 +822,7 @@ export function ComponentCreateDialog({
             <TextArea
               value={metadataText}
               onChange={(event) => setMetadataText(event.target.value)}
-              className="min-h-[220px] font-dmmono"
+              className="font-dmmono min-h-[220px]"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -830,7 +830,7 @@ export function ComponentCreateDialog({
             <TextArea
               value={configText}
               onChange={(event) => setConfigText(event.target.value)}
-              className="min-h-[220px] font-dmmono"
+              className="font-dmmono min-h-[220px]"
             />
           </div>
         </div>
@@ -995,7 +995,7 @@ export function ComponentVersionDialog({
             <TextArea
               value={configText}
               onChange={(event) => setConfigText(event.target.value)}
-              className="min-h-[320px] font-dmmono"
+              className="font-dmmono min-h-[320px]"
             />
           </div>
         </div>
@@ -1791,18 +1791,24 @@ export function SessionRenameDialog({
 }
 
 type KnowledgeMode = 'file' | 'url' | 'text' | 'remote'
+type KnowledgeQuery = {
+  db_id?: string
+  knowledge_id?: string
+}
 
 export function KnowledgeContentDialog({
   open,
   onOpenChange,
   initialMode,
   initialRemotePayload,
+  knowledgeQuery,
   onSuccess
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   initialMode?: KnowledgeMode
   initialRemotePayload?: AnyRecord | null
+  knowledgeQuery?: KnowledgeQuery
   onSuccess?: () => void
 }) {
   const { request } = useStudioClient()
@@ -1823,7 +1829,8 @@ export function KnowledgeContentDialog({
   const configQuery = useQuery({
     queryKey: ['knowledge-config', 'dialog'],
     enabled: open,
-    queryFn: () => request<AnyRecord>('/knowledge/config')
+    queryFn: () =>
+      request<AnyRecord>('/knowledge/config', { query: knowledgeQuery })
   })
 
   useEffect(() => {
@@ -1849,6 +1856,7 @@ export function KnowledgeContentDialog({
       if (mode === 'remote') {
         return request('/knowledge/remote-content', {
           method: 'POST',
+          query: knowledgeQuery,
           body: {
             ...parseOptionalJson(remotePayload),
             name: name || undefined,
@@ -1881,6 +1889,7 @@ export function KnowledgeContentDialog({
 
       return request('/knowledge/content', {
         method: 'POST',
+        query: knowledgeQuery,
         body: formData
       })
     },
@@ -2104,11 +2113,13 @@ export function KnowledgeMetadataDialog({
   open,
   onOpenChange,
   content,
+  knowledgeQuery,
   onSuccess
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   content?: AnyRecord | null
+  knowledgeQuery?: KnowledgeQuery
   onSuccess?: () => void
 }) {
   const { request } = useStudioClient()
@@ -2130,6 +2141,7 @@ export function KnowledgeMetadataDialog({
         `/knowledge/content/${content?.content_id || content?.id}`,
         {
           method: 'PATCH',
+          query: knowledgeQuery,
           body: {
             name: name || undefined,
             description: description || undefined,

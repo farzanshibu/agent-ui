@@ -2,7 +2,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -244,7 +244,7 @@ function ResourceCard({
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
             <CardTitle className="text-xl">{title}</CardTitle>
-            <div className="font-dmmono text-xs text-muted-foreground">
+            <div className="font-dmmono text-muted-foreground text-xs">
               {id}
             </div>
           </div>
@@ -257,7 +257,7 @@ function ResourceCard({
         {badges ? <div className="flex flex-wrap gap-2">{badges}</div> : null}
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="line-clamp-3 text-sm text-muted-foreground">
+        <p className="text-muted-foreground line-clamp-3 text-sm">
           {description || 'No description provided by AgentOS.'}
         </p>
         {footer}
@@ -633,7 +633,7 @@ export function AgentsScreen() {
       >
         <div className="mb-6 flex items-center gap-3">
           <div className="relative max-w-md flex-1">
-            <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Search className="text-muted-foreground pointer-events-none absolute left-3 top-3 h-4 w-4" />
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -672,7 +672,7 @@ export function AgentsScreen() {
                 }
                 footer={
                   <div className="flex items-center justify-between">
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-muted-foreground text-xs">
                       {formatNumber(
                         agent.tools?.length || agent.tool_count || 0
                       )}{' '}
@@ -1278,9 +1278,8 @@ export function SessionsScreen() {
     }
   )
   const sessions = normalizeResourceList(sessionsQuery.data)
-  const bulkSelection = useBulkSelection(
-    sessions,
-    (row) => String(row.session_id || row.id)
+  const bulkSelection = useBulkSelection(sessions, (row) =>
+    String(row.session_id || row.id)
   )
   const deleteMutation = useMutation({
     mutationFn: async (sessionId: string) => {
@@ -1382,7 +1381,13 @@ export function SessionsScreen() {
             placeholder="User ID"
             className="max-w-xs"
           />
-          <Select value={sortBy} onValueChange={(v) => { setSortBy(v); setPage(1) }}>
+          <Select
+            value={sortBy}
+            onValueChange={(v) => {
+              setSortBy(v)
+              setPage(1)
+            }}
+          >
             <SelectTrigger className="w-full lg:w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -1411,7 +1416,8 @@ export function SessionsScreen() {
             {
               label: 'Delete selected',
               variant: 'destructive' as const,
-              onClick: () => bulkDeleteMutation.mutate([...bulkSelection.selectedIds]),
+              onClick: () =>
+                bulkDeleteMutation.mutate([...bulkSelection.selectedIds]),
               disabled: bulkDeleteMutation.isPending
             }
           ]}
@@ -1527,9 +1533,7 @@ export function SessionsScreen() {
           ]}
         />
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            Page {page}
-          </span>
+          <span className="text-muted-foreground text-sm">Page {page}</span>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -1773,8 +1777,8 @@ export function SessionDetailScreen({ sessionId }: { sessionId: string }) {
                       key={index}
                       className={`rounded-2xl border p-4 ${
                         role === 'user'
-                          ? 'ml-auto max-w-[85%] bg-primary text-primary-foreground'
-                          : 'max-w-[90%] bg-card'
+                          ? 'bg-primary text-primary-foreground ml-auto max-w-[85%]'
+                          : 'bg-card max-w-[90%]'
                       }`}
                     >
                       <div className="mb-2 text-xs uppercase tracking-[0.18em] opacity-70">
@@ -2082,8 +2086,10 @@ export function SessionRunDetailScreen({
                   }}
                 />
               </div>
-              {(run.reasoning_content || run.reasoning) ? (
-                <ReasoningBlock content={String(run.reasoning_content || run.reasoning)} />
+              {run.reasoning_content || run.reasoning ? (
+                <ReasoningBlock
+                  content={String(run.reasoning_content || run.reasoning)}
+                />
               ) : null}
             </SectionCard>
             <SectionCard title="Tool Calls">
@@ -2094,7 +2100,9 @@ export function SessionRunDetailScreen({
                       key={toolCall.id || toolCall.tool_call_id || index}
                       name={toolCall.tool_name || toolCall.name || 'Tool'}
                       args={toolCall.arguments || toolCall.args}
-                      result={toolCall.result || toolCall.output || toolCall.response}
+                      result={
+                        toolCall.result || toolCall.output || toolCall.response
+                      }
                       status={toolCall.status}
                       durationMs={toolCall.duration_ms || toolCall.duration}
                     />
@@ -2134,9 +2142,9 @@ export function SessionRunDetailScreen({
                 {messages.map((message, index) => (
                   <div
                     key={message.id || message.message_id || index}
-                    className="rounded-2xl border bg-muted/10 p-4"
+                    className="bg-muted/10 rounded-2xl border p-4"
                   >
-                    <div className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <div className="text-muted-foreground mb-2 text-xs uppercase tracking-[0.18em]">
                       {message.role || message.type || `message-${index + 1}`}
                     </div>
                     <div className="whitespace-pre-wrap text-sm">
@@ -2262,7 +2270,7 @@ export function MemoryScreen() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="line-clamp-4 text-sm text-muted-foreground">
+                <p className="text-muted-foreground line-clamp-4 text-sm">
                   {memory.content ||
                     memory.memory ||
                     'No memory content available.'}
@@ -2369,6 +2377,7 @@ export function MemoryScreen() {
 
 export function KnowledgeScreen() {
   const { request } = useStudioClient()
+  const searchParams = useSearchParams()
   const [query, setQuery] = useState('')
   const [searchType, setSearchType] = useState('hybrid')
   const [results, setResults] = useState<unknown>(null)
@@ -2380,20 +2389,41 @@ export function KnowledgeScreen() {
     useState<AnyRecord | null>(null)
   const [metadataDialogOpen, setMetadataDialogOpen] = useState(false)
   const [selectedContent, setSelectedContent] = useState<AnyRecord | null>(null)
-  const [remoteKnowledgeId, setRemoteKnowledgeId] = useState('')
+  const [remoteKnowledgeId, setRemoteKnowledgeId] = useState(
+    searchParams.get('knowledge_id') || ''
+  )
   const [selectedSourceId, setSelectedSourceId] = useState('')
   const [remotePrefix, setRemotePrefix] = useState('')
   const [selectedRemoteFiles, setSelectedRemoteFiles] = useState<string[]>([])
   const [activeRemoteItem, setActiveRemoteItem] = useState<AnyRecord | null>(
     null
   )
+  const selectedDbId = searchParams.get('db_id') || ''
+  const selectedKnowledgeId = searchParams.get('knowledge_id') || ''
+  const knowledgeQuery = useMemo(
+    () => ({
+      db_id: selectedDbId || undefined,
+      knowledge_id: selectedKnowledgeId || remoteKnowledgeId || undefined
+    }),
+    [remoteKnowledgeId, selectedDbId, selectedKnowledgeId]
+  )
   const contentQuery = useStudioQuery<AnyRecord[] | { data?: AnyRecord[] }>(
-    ['knowledge-content'],
-    '/knowledge/content'
+    [
+      'knowledge-content',
+      knowledgeQuery.db_id || null,
+      knowledgeQuery.knowledge_id || null
+    ],
+    '/knowledge/content',
+    knowledgeQuery
   )
   const configQuery = useStudioQuery<AnyRecord>(
-    ['knowledge-config'],
-    '/knowledge/config'
+    [
+      'knowledge-config',
+      knowledgeQuery.db_id || null,
+      knowledgeQuery.knowledge_id || null
+    ],
+    '/knowledge/config',
+    knowledgeQuery
   )
   const sourcesQuery = useQuery({
     queryKey: ['knowledge-sources', remoteKnowledgeId],
@@ -2423,12 +2453,17 @@ export function KnowledgeScreen() {
       (item) => String(item.status || '').toLowerCase() === 'processing'
     )
     if (!hasProcessing) return
-    const interval = setInterval(() => { void contentQuery.refetch() }, 5000)
+    const interval = setInterval(() => {
+      void contentQuery.refetch()
+    }, 5000)
     return () => clearInterval(interval)
   }, [contentQuery.data, contentQuery])
   const deleteMutation = useMutation({
     mutationFn: async (contentId: string) => {
-      return request(`/knowledge/content/${contentId}`, { method: 'DELETE' })
+      return request(`/knowledge/content/${contentId}`, {
+        method: 'DELETE',
+        query: knowledgeQuery
+      })
     },
     onSuccess: async () => {
       toast.success('Knowledge content deleted')
@@ -2442,7 +2477,10 @@ export function KnowledgeScreen() {
   })
   const deleteAllMutation = useMutation({
     mutationFn: async () => {
-      return request('/knowledge/content', { method: 'DELETE' })
+      return request('/knowledge/content', {
+        method: 'DELETE',
+        query: knowledgeQuery
+      })
     },
     onSuccess: async () => {
       toast.success('All knowledge content deleted')
@@ -2491,7 +2529,9 @@ export function KnowledgeScreen() {
   }, [remotePrefix, selectedSourceId])
 
   const content = normalizeResourceList(contentQuery.data)
-  const contentSelection = useBulkSelection(content, (item) => String(item.content_id || item.id))
+  const contentSelection = useBulkSelection(content, (item) =>
+    String(item.content_id || item.id)
+  )
 
   if (contentQuery.isLoading || configQuery.isLoading)
     return <LoadingPanel label="Loading knowledge base" />
@@ -2574,7 +2614,9 @@ export function KnowledgeScreen() {
                 label: 'Delete selected',
                 variant: 'destructive' as const,
                 onClick: () => {
-                  const ids = contentSelection.selectedItems.map((item) => String(item.content_id || item.id))
+                  const ids = contentSelection.selectedItems.map((item) =>
+                    String(item.content_id || item.id)
+                  )
                   ids.forEach((id) => deleteMutation.mutate(id))
                 },
                 disabled: deleteMutation.isPending
@@ -2616,8 +2658,17 @@ export function KnowledgeScreen() {
                 label: 'Status',
                 render: (row) => {
                   const status = row.status?.toLowerCase?.() || ''
-                  if (['processing', 'completed', 'failed', 'queued'].includes(status)) {
-                    return <ProcessingStatusIndicator status={status} pollingActive={status === 'processing'} />
+                  if (
+                    ['processing', 'completed', 'failed', 'queued'].includes(
+                      status
+                    )
+                  ) {
+                    return (
+                      <ProcessingStatusIndicator
+                        status={status}
+                        pollingActive={status === 'processing'}
+                      />
+                    )
                   }
                   return <StatusBadge status={row.status} />
                 }
@@ -2687,6 +2738,7 @@ export function KnowledgeScreen() {
                 try {
                   const response = await request('/knowledge/search', {
                     method: 'POST',
+                    query: knowledgeQuery,
                     body: { query, search_type: searchType, max_results: 10 }
                   })
                   setResults(response)
@@ -2785,7 +2837,7 @@ export function KnowledgeScreen() {
             <div className="flex items-center justify-between border-b px-4 py-3">
               <div>
                 <div className="text-sm font-medium">Remote files</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-muted-foreground text-xs">
                   Select files to seed the remote upload dialog.
                 </div>
               </div>
@@ -2862,7 +2914,7 @@ export function KnowledgeScreen() {
             </div>
             <div className="max-h-[360px] overflow-y-auto">
               {sourceFilesQuery.isLoading ? (
-                <div className="p-4 text-sm text-muted-foreground">
+                <div className="text-muted-foreground p-4 text-sm">
                   Loading remote files...
                 </div>
               ) : sourceFiles.length ? (
@@ -2880,7 +2932,7 @@ export function KnowledgeScreen() {
                     <button
                       key={path}
                       type="button"
-                      className="flex w-full items-center justify-between border-b px-4 py-3 text-left transition-colors hover:bg-muted/30"
+                      className="hover:bg-muted/30 flex w-full items-center justify-between border-b px-4 py-3 text-left transition-colors"
                       onClick={() => {
                         setActiveRemoteItem(file)
                         if (isFolder) {
@@ -2895,7 +2947,7 @@ export function KnowledgeScreen() {
                         <div className="text-sm font-medium">
                           {file.name || path}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                           {isFolder
                             ? 'Folder'
                             : `${formatNumber(file.size || 0)} bytes`}
@@ -2913,7 +2965,7 @@ export function KnowledgeScreen() {
                   )
                 })
               ) : (
-                <div className="p-4 text-sm text-muted-foreground">
+                <div className="text-muted-foreground p-4 text-sm">
                   {selectedSourceId
                     ? 'No files returned for this prefix.'
                     : 'Pick a source to browse remote files.'}
@@ -2930,7 +2982,7 @@ export function KnowledgeScreen() {
               }
             />
             {activeRemotePreview ? (
-              <pre className="overflow-x-auto rounded-2xl border bg-muted/40 p-4 text-xs leading-6 text-muted-foreground">
+              <pre className="bg-muted/40 text-muted-foreground overflow-x-auto rounded-2xl border p-4 text-xs leading-6">
                 {activeRemotePreview}
               </pre>
             ) : null}
@@ -2984,6 +3036,7 @@ export function KnowledgeScreen() {
         onOpenChange={setUploadDialogOpen}
         initialMode={uploadDialogMode}
         initialRemotePayload={initialRemotePayload}
+        knowledgeQuery={knowledgeQuery}
         onSuccess={() => {
           void contentQuery.refetch()
           void configQuery.refetch()
@@ -2998,6 +3051,7 @@ export function KnowledgeScreen() {
           if (!open) setSelectedContent(null)
         }}
         content={selectedContent}
+        knowledgeQuery={knowledgeQuery}
         onSuccess={() => {
           void contentQuery.refetch()
         }}
@@ -3738,7 +3792,9 @@ export function TracesScreen() {
               onClick={() => {
                 setSearchResults(null)
                 setSelectedSessionId(null)
-                filterState.setClauses([{ field: 'status', operator: 'EQ', value: '' }])
+                filterState.setClauses([
+                  { field: 'status', operator: 'EQ', value: '' }
+                ])
                 router.replace('/traces')
               }}
             >
@@ -3755,7 +3811,9 @@ export function TracesScreen() {
             onReset={() => {
               setSearchResults(null)
               setSelectedSessionId(null)
-              filterState.setClauses([{ field: 'status', operator: 'EQ', value: '' }])
+              filterState.setClauses([
+                { field: 'status', operator: 'EQ', value: '' }
+              ])
               router.replace('/traces')
             }}
             isLoading={searchMutation.isPending}
@@ -3827,10 +3885,15 @@ export function TracesScreen() {
                     render: (row) => {
                       const sid = row.session_id || row.id
                       return sid ? (
-                        <Link href={`/sessions/${encodeURIComponent(String(sid))}`} className="text-primary underline-offset-4 hover:underline">
+                        <Link
+                          href={`/sessions/${encodeURIComponent(String(sid))}`}
+                          className="text-primary underline-offset-4 hover:underline"
+                        >
                           {String(sid)}
                         </Link>
-                      ) : 'Session'
+                      ) : (
+                        'Session'
+                      )
                     }
                   },
                   {
@@ -3995,11 +4058,23 @@ function TraceSpanTree({ spans }: { spans: AnyRecord[] }) {
               <LLMSpanCard
                 model={span.model || span.model_id}
                 provider={span.model_provider || span.provider}
-                inputTokens={span.input_tokens || span.usage?.input_tokens || span.metrics?.input_tokens}
-                outputTokens={span.output_tokens || span.usage?.output_tokens || span.metrics?.output_tokens}
+                inputTokens={
+                  span.input_tokens ||
+                  span.usage?.input_tokens ||
+                  span.metrics?.input_tokens
+                }
+                outputTokens={
+                  span.output_tokens ||
+                  span.usage?.output_tokens ||
+                  span.metrics?.output_tokens
+                }
                 durationMs={span.duration_ms || span.duration}
-                prompts={span.input || span.prompts || span.messages || span.prompt}
-                response={span.output || span.response || span.completion || span.result}
+                prompts={
+                  span.input || span.prompts || span.messages || span.prompt
+                }
+                response={
+                  span.output || span.response || span.completion || span.result
+                }
               />
               {children.length ? (
                 <div className="mt-4 border-l pl-4">
@@ -4030,10 +4105,7 @@ function TraceSpanTree({ spans }: { spans: AnyRecord[] }) {
         }
 
         return (
-          <div
-            key={spanKey}
-            className="rounded-2xl border bg-muted/20 p-4"
-          >
+          <div key={spanKey} className="bg-muted/20 rounded-2xl border p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <EventTypeIcon type={spanType || 'span'} />
@@ -4041,7 +4113,7 @@ function TraceSpanTree({ spans }: { spans: AnyRecord[] }) {
                   <div className="font-medium">
                     {span.name || span.span_id || `Span ${index + 1}`}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-muted-foreground text-xs">
                     {span.span_type || span.type || 'span'}
                   </div>
                 </div>
@@ -4060,9 +4132,11 @@ function TraceSpanTree({ spans }: { spans: AnyRecord[] }) {
                 <JsonBlock data={span.error || {}} />
               </div>
             ) : null}
-            {(span.reasoning_content || span.reasoning) ? (
+            {span.reasoning_content || span.reasoning ? (
               <div className="mt-3">
-                <ReasoningBlock content={String(span.reasoning_content || span.reasoning)} />
+                <ReasoningBlock
+                  content={String(span.reasoning_content || span.reasoning)}
+                />
               </div>
             ) : null}
             {children.length ? (
@@ -4172,7 +4246,7 @@ function TraceTimeline({
         return (
           <div
             key={span.__spanId || span.span_id || span.id || index}
-            className="rounded-2xl border bg-muted/10 p-4"
+            className="bg-muted/10 rounded-2xl border p-4"
           >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div
@@ -4182,7 +4256,7 @@ function TraceTimeline({
                 <div className="truncate text-sm font-medium">
                   {span.name || span.span_id || `Span ${index + 1}`}
                 </div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-muted-foreground text-xs">
                   {span.span_type || span.type || 'span'}
                 </div>
               </div>
@@ -4191,10 +4265,10 @@ function TraceTimeline({
                 <Badge variant="outline">{formatDuration(durationMs)}</Badge>
               </div>
             </div>
-            <div className="rounded-full bg-muted/70 p-1">
-              <div className="relative h-5 rounded-full bg-background/70">
+            <div className="bg-muted/70 rounded-full p-1">
+              <div className="bg-background/70 relative h-5 rounded-full">
                 <div
-                  className="absolute top-0 h-5 rounded-full bg-primary/80"
+                  className="bg-primary/80 absolute top-0 h-5 rounded-full"
                   style={{
                     left: `${left}%`,
                     width: `${Math.min(width, 100 - left)}%`
@@ -4349,9 +4423,9 @@ export function TraceDetailScreen({ traceId }: { traceId: string }) {
                 {Object.entries(spanTypes).map(([type, count]) => (
                   <div
                     key={type}
-                    className="rounded-2xl border bg-muted/20 p-4 text-sm"
+                    className="bg-muted/20 rounded-2xl border p-4 text-sm"
                   >
-                    <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                    <div className="text-muted-foreground text-xs uppercase tracking-[0.18em]">
                       {type}
                     </div>
                     <div className="mt-2 text-2xl font-semibold">
@@ -4722,7 +4796,9 @@ export function ComponentDetailScreen({
                   <SelectGroup>
                     <SelectItem value="__none__">Select a version</SelectItem>
                     {configs.map((cfg, index) => {
-                      const version = String(cfg.version || cfg.id || `v-${index}`)
+                      const version = String(
+                        cfg.version || cfg.id || `v-${index}`
+                      )
                       return (
                         <SelectItem key={version} value={version}>
                           {version} ({cfg.stage || 'draft'})
@@ -4744,7 +4820,11 @@ export function ComponentDetailScreen({
               ) : (
                 <JsonDiffViewer
                   before={component.current_config || component.config || {}}
-                  after={compareConfigQuery.data?.config || compareConfigQuery.data || {}}
+                  after={
+                    compareConfigQuery.data?.config ||
+                    compareConfigQuery.data ||
+                    {}
+                  }
                   beforeLabel={`Current (${component.current_version || 'active'})`}
                   afterLabel={`Version ${compareVersion}`}
                 />
@@ -4871,7 +4951,11 @@ export function SchedulesScreen() {
             {
               key: 'cron',
               label: 'Cron',
-              render: (row) => <CronHumanizer expression={row.cron_expression || row.cron || ''} />
+              render: (row) => (
+                <CronHumanizer
+                  expression={row.cron_expression || row.cron || ''}
+                />
+              )
             },
             {
               key: 'timezone',
@@ -5010,7 +5094,11 @@ export function ScheduleDetailScreen({ scheduleId }: { scheduleId: string }) {
           },
           {
             label: 'Cron',
-            value: <CronHumanizer expression={schedule.cron_expression || schedule.cron || ''} />
+            value: (
+              <CronHumanizer
+                expression={schedule.cron_expression || schedule.cron || ''}
+              />
+            )
           },
           { label: 'Timezone', value: schedule.timezone || 'UTC' },
           {
@@ -5398,10 +5486,15 @@ export function ApprovalsScreen() {
                 if (!value) return '—'
                 const href = getComponentHref(row)
                 return href ? (
-                  <Link href={href} className="text-primary underline-offset-4 hover:underline">
+                  <Link
+                    href={href}
+                    className="text-primary underline-offset-4 hover:underline"
+                  >
                     {String(value)}
                   </Link>
-                ) : String(value)
+                ) : (
+                  String(value)
+                )
               }
             },
             {
@@ -5413,7 +5506,10 @@ export function ApprovalsScreen() {
                   ? `/sessions/${encodeURIComponent(String(row.session_id))}/runs/${encodeURIComponent(String(row.run_id))}`
                   : `/traces?view=runs&run_id=${encodeURIComponent(String(row.run_id))}`
                 return (
-                  <Link href={href} className="text-primary underline-offset-4 hover:underline">
+                  <Link
+                    href={href}
+                    className="text-primary underline-offset-4 hover:underline"
+                  >
                     {String(row.run_id)}
                   </Link>
                 )
@@ -5532,12 +5628,15 @@ export function RegistryScreen() {
     {}
   )
   const groupedResources = Object.entries(
-    clientFilteredResources.reduce<Record<string, AnyRecord[]>>((acc, resource) => {
-      const key = String(resource.resource_type || resource.type || 'other')
-      if (!acc[key]) acc[key] = []
-      acc[key].push(resource)
-      return acc
-    }, {})
+    clientFilteredResources.reduce<Record<string, AnyRecord[]>>(
+      (acc, resource) => {
+        const key = String(resource.resource_type || resource.type || 'other')
+        if (!acc[key]) acc[key] = []
+        acc[key].push(resource)
+        return acc
+      },
+      {}
+    )
   ).sort(([a], [b]) => a.localeCompare(b))
   return (
     <div className="space-y-6">
@@ -5606,17 +5705,28 @@ export function RegistryScreen() {
                   const resourceHref = getComponentHref({
                     ...resource,
                     type: resource.resource_type || resource.type,
-                    agent_id: resource.resource_type === 'agent' ? (resource.id || resource.resource_id) : undefined,
-                    team_id: resource.resource_type === 'team' ? (resource.id || resource.resource_id) : undefined
+                    agent_id:
+                      resource.resource_type === 'agent'
+                        ? resource.id || resource.resource_id
+                        : undefined,
+                    team_id:
+                      resource.resource_type === 'team'
+                        ? resource.id || resource.resource_id
+                        : undefined
                   })
                   return (
-                    <Card key={resource.id || resource.resource_id || resource.name}>
+                    <Card
+                      key={resource.id || resource.resource_id || resource.name}
+                    >
                       <CardHeader>
                         <div className="flex items-center justify-between gap-3">
                           <div>
                             <CardTitle className="text-lg">
                               {resourceHref ? (
-                                <Link href={resourceHref} className="text-primary underline-offset-4 hover:underline">
+                                <Link
+                                  href={resourceHref}
+                                  className="text-primary underline-offset-4 hover:underline"
+                                >
                                   {resource.name || resource.id || 'Resource'}
                                 </Link>
                               ) : (
@@ -5628,12 +5738,14 @@ export function RegistryScreen() {
                             </CardDescription>
                           </div>
                           <Badge variant="outline">
-                            {resource.resource_type || resource.type || 'resource'}
+                            {resource.resource_type ||
+                              resource.type ||
+                              'resource'}
                           </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <p className="line-clamp-3 text-sm text-muted-foreground">
+                        <p className="text-muted-foreground line-clamp-3 text-sm">
                           {resource.description || 'No description provided.'}
                         </p>
                         <JsonBlock data={resource.metadata || {}} />
@@ -5654,7 +5766,7 @@ export function LegacyPlaygroundScreen() {
   const hasEnvToken = !!process.env.NEXT_PUBLIC_OS_SECURITY_KEY
   const envToken = process.env.NEXT_PUBLIC_OS_SECURITY_KEY || ''
   return (
-    <div className="flex h-screen bg-background/80">
+    <div className="bg-background/80 flex h-screen">
       <Sidebar hasEnvToken={hasEnvToken} envToken={envToken} />
       <ChatArea />
     </div>
