@@ -24,7 +24,7 @@ export function useStatusPolling<T>(
     queryKey,
     queryFn: fetchFn,
     enabled: enabled && !completed,
-    refetchInterval: completed ? false : intervalMs,
+    refetchInterval: completed ? false : intervalMs
   })
 
   if (data !== undefined && isComplete(data) && !completed) {
@@ -89,7 +89,15 @@ export function useBulkSelection<T>(
     [items, selectedIds, getId]
   )
 
-  return { selectedIds, isSelected, toggle, selectAll, deselectAll, selectedCount, selectedItems }
+  return {
+    selectedIds,
+    isSelected,
+    toggle,
+    selectAll,
+    deselectAll,
+    selectedCount,
+    selectedItems
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -104,11 +112,17 @@ interface FilterClause {
 
 export function useFilterState(initialField?: string) {
   const makeEmptyClause = useCallback(
-    (field?: string): FilterClause => ({ field: field ?? '', operator: 'eq', value: '' }),
+    (field?: string): FilterClause => ({
+      field: field ?? '',
+      operator: 'eq',
+      value: ''
+    }),
     []
   )
 
-  const [clauses, setClauses] = useState<FilterClause[]>([makeEmptyClause(initialField)])
+  const [clauses, setClauses] = useState<FilterClause[]>([
+    makeEmptyClause(initialField)
+  ])
   const [logicalOperator, setLogicalOperator] = useState<'AND' | 'OR'>('AND')
 
   const addClause = useCallback(
@@ -125,7 +139,9 @@ export function useFilterState(initialField?: string) {
   const updateClause = useCallback(
     (index: number, updates: Partial<FilterClause>) => {
       setClauses((prev) =>
-        prev.map((clause, i) => (i === index ? { ...clause, ...updates } : clause))
+        prev.map((clause, i) =>
+          i === index ? { ...clause, ...updates } : clause
+        )
       )
     },
     []
@@ -149,7 +165,7 @@ export function useFilterState(initialField?: string) {
     removeClause,
     updateClause,
     resetClauses,
-    activeClauseCount,
+    activeClauseCount
   }
 }
 

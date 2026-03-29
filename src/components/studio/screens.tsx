@@ -244,7 +244,7 @@ function ResourceCard({
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
             <CardTitle className="text-xl">{title}</CardTitle>
-            <div className="font-dmmono text-muted-foreground text-xs">
+            <div className="font-dmmono text-xs text-muted-foreground">
               {id}
             </div>
           </div>
@@ -257,7 +257,7 @@ function ResourceCard({
         {badges ? <div className="flex flex-wrap gap-2">{badges}</div> : null}
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-muted-foreground line-clamp-3 text-sm">
+        <p className="line-clamp-3 text-sm text-muted-foreground">
           {description || 'No description provided by AgentOS.'}
         </p>
         {footer}
@@ -633,7 +633,7 @@ export function AgentsScreen() {
       >
         <div className="mb-6 flex items-center gap-3">
           <div className="relative max-w-md flex-1">
-            <Search className="text-muted-foreground pointer-events-none absolute left-3 top-3 h-4 w-4" />
+            <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -672,7 +672,7 @@ export function AgentsScreen() {
                 }
                 footer={
                   <div className="flex items-center justify-between">
-                    <div className="text-muted-foreground text-xs">
+                    <div className="text-xs text-muted-foreground">
                       {formatNumber(
                         agent.tools?.length || agent.tool_count || 0
                       )}{' '}
@@ -1533,7 +1533,7 @@ export function SessionsScreen() {
           ]}
         />
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-muted-foreground text-sm">Page {page}</span>
+          <span className="text-sm text-muted-foreground">Page {page}</span>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -1777,8 +1777,8 @@ export function SessionDetailScreen({ sessionId }: { sessionId: string }) {
                       key={index}
                       className={`rounded-2xl border p-4 ${
                         role === 'user'
-                          ? 'bg-primary text-primary-foreground ml-auto max-w-[85%]'
-                          : 'bg-card max-w-[90%]'
+                          ? 'ml-auto max-w-[85%] bg-primary text-primary-foreground'
+                          : 'max-w-[90%] bg-card'
                       }`}
                     >
                       <div className="mb-2 text-xs uppercase tracking-[0.18em] opacity-70">
@@ -2142,9 +2142,9 @@ export function SessionRunDetailScreen({
                 {messages.map((message, index) => (
                   <div
                     key={message.id || message.message_id || index}
-                    className="bg-muted/10 rounded-2xl border p-4"
+                    className="rounded-2xl border bg-muted/10 p-4"
                   >
-                    <div className="text-muted-foreground mb-2 text-xs uppercase tracking-[0.18em]">
+                    <div className="mb-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
                       {message.role || message.type || `message-${index + 1}`}
                     </div>
                     <div className="whitespace-pre-wrap text-sm">
@@ -2270,7 +2270,7 @@ export function MemoryScreen() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-muted-foreground line-clamp-4 text-sm">
+                <p className="line-clamp-4 text-sm text-muted-foreground">
                   {memory.content ||
                     memory.memory ||
                     'No memory content available.'}
@@ -2837,7 +2837,7 @@ export function KnowledgeScreen() {
             <div className="flex items-center justify-between border-b px-4 py-3">
               <div>
                 <div className="text-sm font-medium">Remote files</div>
-                <div className="text-muted-foreground text-xs">
+                <div className="text-xs text-muted-foreground">
                   Select files to seed the remote upload dialog.
                 </div>
               </div>
@@ -2914,7 +2914,7 @@ export function KnowledgeScreen() {
             </div>
             <div className="max-h-[360px] overflow-y-auto">
               {sourceFilesQuery.isLoading ? (
-                <div className="text-muted-foreground p-4 text-sm">
+                <div className="p-4 text-sm text-muted-foreground">
                   Loading remote files...
                 </div>
               ) : sourceFiles.length ? (
@@ -2932,7 +2932,7 @@ export function KnowledgeScreen() {
                     <button
                       key={path}
                       type="button"
-                      className="hover:bg-muted/30 flex w-full items-center justify-between border-b px-4 py-3 text-left transition-colors"
+                      className="flex w-full items-center justify-between border-b px-4 py-3 text-left transition-colors hover:bg-muted/30"
                       onClick={() => {
                         setActiveRemoteItem(file)
                         if (isFolder) {
@@ -2947,7 +2947,7 @@ export function KnowledgeScreen() {
                         <div className="text-sm font-medium">
                           {file.name || path}
                         </div>
-                        <div className="text-muted-foreground text-xs">
+                        <div className="text-xs text-muted-foreground">
                           {isFolder
                             ? 'Folder'
                             : `${formatNumber(file.size || 0)} bytes`}
@@ -2965,7 +2965,7 @@ export function KnowledgeScreen() {
                   )
                 })
               ) : (
-                <div className="text-muted-foreground p-4 text-sm">
+                <div className="p-4 text-sm text-muted-foreground">
                   {selectedSourceId
                     ? 'No files returned for this prefix.'
                     : 'Pick a source to browse remote files.'}
@@ -2982,7 +2982,7 @@ export function KnowledgeScreen() {
               }
             />
             {activeRemotePreview ? (
-              <pre className="bg-muted/40 text-muted-foreground overflow-x-auto rounded-2xl border p-4 text-xs leading-6">
+              <pre className="overflow-x-auto rounded-2xl border bg-muted/40 p-4 text-xs leading-6 text-muted-foreground">
                 {activeRemotePreview}
               </pre>
             ) : null}
@@ -4105,7 +4105,7 @@ function TraceSpanTree({ spans }: { spans: AnyRecord[] }) {
         }
 
         return (
-          <div key={spanKey} className="bg-muted/20 rounded-2xl border p-4">
+          <div key={spanKey} className="rounded-2xl border bg-muted/20 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <EventTypeIcon type={spanType || 'span'} />
@@ -4113,7 +4113,7 @@ function TraceSpanTree({ spans }: { spans: AnyRecord[] }) {
                   <div className="font-medium">
                     {span.name || span.span_id || `Span ${index + 1}`}
                   </div>
-                  <div className="text-muted-foreground text-xs">
+                  <div className="text-xs text-muted-foreground">
                     {span.span_type || span.type || 'span'}
                   </div>
                 </div>
@@ -4246,7 +4246,7 @@ function TraceTimeline({
         return (
           <div
             key={span.__spanId || span.span_id || span.id || index}
-            className="bg-muted/10 rounded-2xl border p-4"
+            className="rounded-2xl border bg-muted/10 p-4"
           >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <div
@@ -4256,7 +4256,7 @@ function TraceTimeline({
                 <div className="truncate text-sm font-medium">
                   {span.name || span.span_id || `Span ${index + 1}`}
                 </div>
-                <div className="text-muted-foreground text-xs">
+                <div className="text-xs text-muted-foreground">
                   {span.span_type || span.type || 'span'}
                 </div>
               </div>
@@ -4265,10 +4265,10 @@ function TraceTimeline({
                 <Badge variant="outline">{formatDuration(durationMs)}</Badge>
               </div>
             </div>
-            <div className="bg-muted/70 rounded-full p-1">
-              <div className="bg-background/70 relative h-5 rounded-full">
+            <div className="rounded-full bg-muted/70 p-1">
+              <div className="relative h-5 rounded-full bg-background/70">
                 <div
-                  className="bg-primary/80 absolute top-0 h-5 rounded-full"
+                  className="absolute top-0 h-5 rounded-full bg-primary/80"
                   style={{
                     left: `${left}%`,
                     width: `${Math.min(width, 100 - left)}%`
@@ -4423,9 +4423,9 @@ export function TraceDetailScreen({ traceId }: { traceId: string }) {
                 {Object.entries(spanTypes).map(([type, count]) => (
                   <div
                     key={type}
-                    className="bg-muted/20 rounded-2xl border p-4 text-sm"
+                    className="rounded-2xl border bg-muted/20 p-4 text-sm"
                   >
-                    <div className="text-muted-foreground text-xs uppercase tracking-[0.18em]">
+                    <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                       {type}
                     </div>
                     <div className="mt-2 text-2xl font-semibold">
@@ -5745,7 +5745,7 @@ export function RegistryScreen() {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <p className="text-muted-foreground line-clamp-3 text-sm">
+                        <p className="line-clamp-3 text-sm text-muted-foreground">
                           {resource.description || 'No description provided.'}
                         </p>
                         <JsonBlock data={resource.metadata || {}} />
@@ -5766,7 +5766,7 @@ export function LegacyPlaygroundScreen() {
   const hasEnvToken = !!process.env.NEXT_PUBLIC_OS_SECURITY_KEY
   const envToken = process.env.NEXT_PUBLIC_OS_SECURITY_KEY || ''
   return (
-    <div className="bg-background/80 flex h-screen">
+    <div className="flex h-screen bg-background/80">
       <Sidebar hasEnvToken={hasEnvToken} envToken={envToken} />
       <ChatArea />
     </div>

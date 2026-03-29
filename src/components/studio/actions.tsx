@@ -822,7 +822,7 @@ export function ComponentCreateDialog({
             <TextArea
               value={metadataText}
               onChange={(event) => setMetadataText(event.target.value)}
-              className="font-dmmono min-h-[220px]"
+              className="min-h-[220px] font-dmmono"
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -830,7 +830,7 @@ export function ComponentCreateDialog({
             <TextArea
               value={configText}
               onChange={(event) => setConfigText(event.target.value)}
-              className="font-dmmono min-h-[220px]"
+              className="min-h-[220px] font-dmmono"
             />
           </div>
         </div>
@@ -995,7 +995,7 @@ export function ComponentVersionDialog({
             <TextArea
               value={configText}
               onChange={(event) => setConfigText(event.target.value)}
-              className="font-dmmono min-h-[320px]"
+              className="min-h-[320px] font-dmmono"
             />
           </div>
         </div>

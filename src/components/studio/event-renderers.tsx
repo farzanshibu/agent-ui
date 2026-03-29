@@ -49,7 +49,7 @@ function CollapsibleSection({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1 text-xs uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
       >
         {open ? (
           <ChevronDown className="h-3.5 w-3.5" />
@@ -59,7 +59,7 @@ function CollapsibleSection({
         {label}
       </button>
       {open && (
-        <pre className="mt-1.5 max-h-64 overflow-auto rounded-lg bg-muted/20 p-3 text-xs font-dmmono leading-relaxed">
+        <pre className="mt-1.5 max-h-64 overflow-auto rounded-lg bg-muted/20 p-3 font-dmmono text-xs leading-relaxed">
           {safeJson(data)}
         </pre>
       )}
@@ -144,7 +144,10 @@ export function ToolCallCard({
   isExpanded?: boolean
 }) {
   const isPending =
-    status && !['completed', 'done', 'success', 'error', 'failed'].includes(status.toLowerCase())
+    status &&
+    !['completed', 'done', 'success', 'error', 'failed'].includes(
+      status.toLowerCase()
+    )
 
   return (
     <Card
@@ -168,8 +171,16 @@ export function ToolCallCard({
         </div>
       </CardHeader>
       <CardContent className="px-4 pb-4 pt-0">
-        <CollapsibleSection label="Arguments" data={args} defaultOpen={isExpanded} />
-        <CollapsibleSection label="Result" data={result} defaultOpen={isExpanded} />
+        <CollapsibleSection
+          label="Arguments"
+          data={args}
+          defaultOpen={isExpanded}
+        />
+        <CollapsibleSection
+          label="Result"
+          data={result}
+          defaultOpen={isExpanded}
+        />
       </CardContent>
     </Card>
   )
@@ -208,7 +219,9 @@ export function LLMSpanCard({
           <Cpu className="h-4 w-4" />
         </div>
         <div className="flex flex-1 flex-wrap items-center gap-2">
-          {model && <CardTitle className="text-sm font-semibold">{model}</CardTitle>}
+          {model && (
+            <CardTitle className="text-sm font-semibold">{model}</CardTitle>
+          )}
           {provider && <Badge variant="secondary">{provider}</Badge>}
           {durationMs !== undefined && (
             <Badge variant="outline" className="gap-1 text-xs">
@@ -233,8 +246,16 @@ export function LLMSpanCard({
             </div>
           </div>
         )}
-        <CollapsibleSection label="Prompts" data={prompts} defaultOpen={isExpanded} />
-        <CollapsibleSection label="Response" data={response} defaultOpen={isExpanded} />
+        <CollapsibleSection
+          label="Prompts"
+          data={prompts}
+          defaultOpen={isExpanded}
+        />
+        <CollapsibleSection
+          label="Response"
+          data={response}
+          defaultOpen={isExpanded}
+        />
       </CardContent>
     </Card>
   )
@@ -260,14 +281,14 @@ export function MemoryUpdateChip({
       className={cn(
         'group relative inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors',
         isStarted
-          ? 'bg-amber-500/15 text-amber-700 dark:text-amber-400 animate-pulse'
+          ? 'animate-pulse bg-amber-500/15 text-amber-700 dark:text-amber-400'
           : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
       )}
     >
       <Brain className="h-3 w-3" />
       {memoryId ? `Memory ${memoryId}` : 'Memory'}
       {content && (
-        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden -translate-x-1/2 rounded-lg bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md group-hover:block max-w-xs whitespace-pre-wrap border">
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden max-w-xs -translate-x-1/2 whitespace-pre-wrap rounded-lg border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md group-hover:block">
           {content.length > 200 ? content.slice(0, 200) + '...' : content}
         </span>
       )}
@@ -309,7 +330,7 @@ export function ReasoningBlock({
       <CardContent className="px-3 pb-3 pt-0">
         <div
           className={cn(
-            'overflow-auto text-sm italic text-muted-foreground leading-relaxed',
+            'overflow-auto text-sm italic leading-relaxed text-muted-foreground',
             !expanded && 'max-h-32'
           )}
         >
@@ -349,7 +370,9 @@ export function AgentSpanCard({
           <Zap className="h-4 w-4" />
         </div>
         <div className="flex flex-1 flex-wrap items-center gap-2">
-          {name && <CardTitle className="text-sm font-semibold">{name}</CardTitle>}
+          {name && (
+            <CardTitle className="text-sm font-semibold">{name}</CardTitle>
+          )}
           <StatusBadge status={status} />
           {durationMs !== undefined && (
             <Badge variant="outline" className="gap-1 text-xs">
@@ -359,8 +382,16 @@ export function AgentSpanCard({
         </div>
       </CardHeader>
       <CardContent className="px-4 pb-4 pt-0">
-        <CollapsibleSection label="Input" data={input} defaultOpen={isExpanded} />
-        <CollapsibleSection label="Output" data={output} defaultOpen={isExpanded} />
+        <CollapsibleSection
+          label="Input"
+          data={input}
+          defaultOpen={isExpanded}
+        />
+        <CollapsibleSection
+          label="Output"
+          data={output}
+          defaultOpen={isExpanded}
+        />
       </CardContent>
     </Card>
   )
@@ -404,7 +435,7 @@ export function RunEventTimeline({
           <div key={idx} className="relative flex gap-3 pb-4 last:pb-0">
             {/* vertical line */}
             {idx < events.length - 1 && (
-              <div className="absolute left-[7px] top-5 bottom-0 w-px bg-border" />
+              <div className="absolute bottom-0 left-[7px] top-5 w-px bg-border" />
             )}
             {/* dot */}
             <div
@@ -414,7 +445,7 @@ export function RunEventTimeline({
               )}
             />
             {/* content */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <button
                 type="button"
                 onClick={() => setExpandedIdx(isOpen ? null : idx)}
@@ -482,7 +513,7 @@ function TimelineEventDetail({
   }
   // Default: show raw data
   return (
-    <pre className="max-h-48 overflow-auto rounded-lg bg-muted/20 p-3 text-xs font-dmmono leading-relaxed">
+    <pre className="max-h-48 overflow-auto rounded-lg bg-muted/20 p-3 font-dmmono text-xs leading-relaxed">
       {safeJson(data)}
     </pre>
   )

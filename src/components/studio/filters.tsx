@@ -56,7 +56,7 @@ export function FilterChip({ label, onRemove }: FilterChipProps) {
       <button
         type="button"
         onClick={onRemove}
-        className="hover:bg-muted/40 ml-0.5 rounded-full p-0.5 transition-colors"
+        className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-muted/40"
         aria-label={`Remove filter: ${label}`}
       >
         <X className="h-3 w-3" />
@@ -152,8 +152,8 @@ export function AdvancedFilterBuilder({
         onClick={() => setCollapsed((p) => !p)}
         className="flex w-full items-center gap-2 text-left"
       >
-        <Filter className="text-muted-foreground h-4 w-4" />
-        <span className="text-muted-foreground text-xs uppercase tracking-[0.18em]">
+        <Filter className="h-4 w-4 text-muted-foreground" />
+        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
           Filters
         </span>
         {activeCount > 0 && (
@@ -165,7 +165,7 @@ export function AdvancedFilterBuilder({
 
       {/* Builder rows */}
       {!collapsed && (
-        <div className="bg-muted/10 space-y-2 rounded-2xl border p-4">
+        <div className="space-y-2 rounded-2xl border bg-muted/10 p-4">
           {clauses.map((clause, idx) => (
             <div key={idx} className="flex flex-wrap items-center gap-2">
               {/* AND / OR badge between rows */}

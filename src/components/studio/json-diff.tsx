@@ -145,23 +145,23 @@ export function JsonDiffViewer({
         <TabsContent value="side-by-side">
           <div className="grid grid-cols-2 gap-2">
             {/* Labels */}
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-1">
+            <p className="mb-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
               {beforeLabel}
             </p>
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-1">
+            <p className="mb-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
               {afterLabel}
             </p>
 
             {/* Before pane */}
             <div className="max-h-96 overflow-auto rounded-2xl border bg-muted/10">
-              <pre className="text-xs leading-5 font-dmmono">
+              <pre className="font-dmmono text-xs leading-5">
                 {diff.map((line, idx) => {
                   if (line.kind === 'added') return null
                   const bg =
                     line.kind === 'removed' ? 'bg-red-500/10' : undefined
                   return (
                     <div key={idx} className={cn('flex', bg)}>
-                      <span className="inline-block w-10 shrink-0 select-none text-right pr-2 text-muted-foreground/60">
+                      <span className="inline-block w-10 shrink-0 select-none pr-2 text-right text-muted-foreground/60">
                         {line.beforeLineNo ?? ''}
                       </span>
                       <span className="whitespace-pre">{line.text}</span>
@@ -173,14 +173,14 @@ export function JsonDiffViewer({
 
             {/* After pane */}
             <div className="max-h-96 overflow-auto rounded-2xl border bg-muted/10">
-              <pre className="text-xs leading-5 font-dmmono">
+              <pre className="font-dmmono text-xs leading-5">
                 {diff.map((line, idx) => {
                   if (line.kind === 'removed') return null
                   const bg =
                     line.kind === 'added' ? 'bg-green-500/10' : undefined
                   return (
                     <div key={idx} className={cn('flex', bg)}>
-                      <span className="inline-block w-10 shrink-0 select-none text-right pr-2 text-muted-foreground/60">
+                      <span className="inline-block w-10 shrink-0 select-none pr-2 text-right text-muted-foreground/60">
                         {line.afterLineNo ?? ''}
                       </span>
                       <span className="whitespace-pre">{line.text}</span>
@@ -195,7 +195,7 @@ export function JsonDiffViewer({
         {/* Unified view */}
         <TabsContent value="unified">
           <div className="max-h-96 overflow-auto rounded-2xl border bg-muted/10">
-            <pre className="text-xs leading-5 font-dmmono">
+            <pre className="font-dmmono text-xs leading-5">
               {diff.map((line, idx) => {
                 let bg: string | undefined
                 let prefix = ' '
@@ -213,10 +213,10 @@ export function JsonDiffViewer({
 
                 return (
                   <div key={idx} className={cn('flex', bg)}>
-                    <span className="inline-block w-10 shrink-0 select-none text-right pr-2 text-muted-foreground/60">
+                    <span className="inline-block w-10 shrink-0 select-none pr-2 text-right text-muted-foreground/60">
                       {line.beforeLineNo ?? ''}
                     </span>
-                    <span className="inline-block w-10 shrink-0 select-none text-right pr-2 text-muted-foreground/60">
+                    <span className="inline-block w-10 shrink-0 select-none pr-2 text-right text-muted-foreground/60">
                       {line.afterLineNo ?? ''}
                     </span>
                     <span className={cn('whitespace-pre', textColor)}>

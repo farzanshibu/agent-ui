@@ -102,7 +102,7 @@ export function WorkflowStepGraph({
 
   if (steps.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground py-6 text-center">
+      <p className="py-6 text-center text-sm text-muted-foreground">
         No workflow steps to display.
       </p>
     )
@@ -151,7 +151,7 @@ export function WorkflowStepGraph({
                 )}
               </div>
               {!isLast && (
-                <div className="w-px flex-1 min-h-[1.5rem] bg-muted-foreground/20" />
+                <div className="min-h-[1.5rem] w-px flex-1 bg-muted-foreground/20" />
               )}
             </div>
 
@@ -177,7 +177,7 @@ export function WorkflowStepGraph({
                         </p>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex shrink-0 items-center gap-2">
                       {(step.step_type ?? step.type) && (
                         <Badge variant="outline" className="text-[10px]">
                           {step.step_type ?? step.type}
@@ -208,7 +208,7 @@ export function WorkflowStepGraph({
                       <button
                         type="button"
                         onClick={() => toggleStep(index)}
-                        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
                       >
                         <ChevronRight
                           className={cn(
@@ -221,7 +221,7 @@ export function WorkflowStepGraph({
                         </span>
                       </button>
                       {isExpanded && (
-                        <pre className="mt-2 max-h-64 overflow-auto rounded-2xl bg-muted/20 p-3 text-xs leading-5 font-dmmono">
+                        <pre className="mt-2 max-h-64 overflow-auto rounded-2xl bg-muted/20 p-3 font-dmmono text-xs leading-5">
                           {safeJson(step.output)}
                         </pre>
                       )}
@@ -252,25 +252,48 @@ function humanizeCron(expr: string): string | null {
 
   // Every N minutes
   const everyNMin = minute.match(/^\*\/(\d+)$/)
-  if (everyNMin && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+  if (
+    everyNMin &&
+    hour === '*' &&
+    dayOfMonth === '*' &&
+    month === '*' &&
+    dayOfWeek === '*'
+  ) {
     const n = Number(everyNMin[1])
     return n === 1 ? 'Every minute' : `Every ${n} minutes`
   }
 
   // Every N hours
   const everyNHour = hour.match(/^\*\/(\d+)$/)
-  if (minute === '0' && everyNHour && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+  if (
+    minute === '0' &&
+    everyNHour &&
+    dayOfMonth === '*' &&
+    month === '*' &&
+    dayOfWeek === '*'
+  ) {
     const n = Number(everyNHour[1])
     return n === 1 ? 'Every hour' : `Every ${n} hours`
   }
 
   // Every hour
-  if (minute === '0' && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+  if (
+    minute === '0' &&
+    hour === '*' &&
+    dayOfMonth === '*' &&
+    month === '*' &&
+    dayOfWeek === '*'
+  ) {
     return 'Every hour'
   }
 
   // Specific time patterns
-  if (dayOfMonth === '*' && month === '*' && minute.match(/^\d+$/) && hour.match(/^\d+$/)) {
+  if (
+    dayOfMonth === '*' &&
+    month === '*' &&
+    minute.match(/^\d+$/) &&
+    hour.match(/^\d+$/)
+  ) {
     const h = Number(hour)
     const m = Number(minute)
     const ampm = h >= 12 ? 'PM' : 'AM'
@@ -283,13 +306,20 @@ function humanizeCron(expr: string): string | null {
     // Weekdays only
     if (dayOfWeek === '1-5') return `Weekdays at ${timeStr}`
     // Weekends
-    if (dayOfWeek === '0,6' || dayOfWeek === '6,0') return `Weekends at ${timeStr}`
+    if (dayOfWeek === '0,6' || dayOfWeek === '6,0')
+      return `Weekends at ${timeStr}`
     // Every day
     if (dayOfWeek === '*') return `Every day at ${timeStr}`
   }
 
   // First day of every month
-  if (minute === '0' && hour === '0' && dayOfMonth === '1' && month === '*' && dayOfWeek === '*') {
+  if (
+    minute === '0' &&
+    hour === '0' &&
+    dayOfMonth === '1' &&
+    month === '*' &&
+    dayOfWeek === '*'
+  ) {
     return 'First day of every month'
   }
 
@@ -328,7 +358,7 @@ export function StepResultAccordion({ steps }: StepResultAccordionProps) {
 
   if (steps.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground py-4 text-center">
+      <p className="py-4 text-center text-sm text-muted-foreground">
         No step results.
       </p>
     )
@@ -344,7 +374,7 @@ export function StepResultAccordion({ steps }: StepResultAccordionProps) {
             <button
               type="button"
               onClick={() => toggle(index)}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted/20 transition-colors"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/20"
             >
               <ChevronRight
                 className={cn(
@@ -352,16 +382,16 @@ export function StepResultAccordion({ steps }: StepResultAccordionProps) {
                   isOpen && 'rotate-90'
                 )}
               />
-              <div className="flex flex-1 items-center justify-between gap-2 min-w-0">
-                <div className="flex items-center gap-2 min-w-0">
+              <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-2">
                   {statusIcon(step.status)}
-                  <span className="text-sm font-medium truncate">
+                  <span className="truncate text-sm font-medium">
                     {step.name ?? `Step ${index + 1}`}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex shrink-0 items-center gap-2">
                   {step.duration_ms != null && (
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Timer className="h-3 w-3" />
                       {formatDuration(step.duration_ms)}
                     </span>
@@ -380,7 +410,7 @@ export function StepResultAccordion({ steps }: StepResultAccordionProps) {
 
             {isOpen && step.output != null && (
               <div className="px-4 pb-4 pl-11">
-                <pre className="max-h-64 overflow-auto rounded-2xl bg-muted/20 p-3 text-xs leading-5 font-dmmono">
+                <pre className="max-h-64 overflow-auto rounded-2xl bg-muted/20 p-3 font-dmmono text-xs leading-5">
                   {safeJson(step.output)}
                 </pre>
               </div>

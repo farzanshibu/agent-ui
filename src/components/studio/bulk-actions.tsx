@@ -65,7 +65,7 @@ export function BulkSelectionBar({
         'sticky bottom-4 z-40 mx-auto flex w-full max-w-4xl items-center justify-between',
         'rounded-2xl border bg-background/95 px-4 py-3 shadow-lg backdrop-blur-sm',
         'translate-y-0 opacity-100 transition-all duration-300 ease-out',
-        'animate-in slide-in-from-bottom-4 fade-in-0'
+        'animate-in fade-in-0 slide-in-from-bottom-4'
       )}
     >
       {/* Left: selection info */}
@@ -186,7 +186,7 @@ export function ProcessingStatusIndicator({
       )}
 
       {pollingActive && status === 'processing' && (
-        <span className="ml-0.5 h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+        <span className="ml-0.5 h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
       )}
     </span>
   )

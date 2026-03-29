@@ -11,6 +11,8 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# Ensure this path exists even when the repository has no public assets.
+RUN mkdir -p public
 RUN corepack enable && pnpm run build
 
 FROM node:20-alpine AS runner
