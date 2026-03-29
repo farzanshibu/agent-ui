@@ -30,15 +30,18 @@ export function useStudioClient() {
   const request = useCallback(
     async <T>(path: string, options: RequestOptions = {}): Promise<T> => {
       const { query, headers, body, ...rest } = options
+      const hasJsonBody =
+        body !== undefined &&
+        body !== null &&
+        !(body instanceof FormData) &&
+        typeof body !== 'string'
       const normalizedEndpoint = endpoint.replace(/\/$/, '')
       const response = await fetch(
         `${normalizedEndpoint}${withQuery(path, query)}`,
         {
           ...rest,
           headers: {
-            ...(body instanceof FormData
-              ? {}
-              : { 'Content-Type': 'application/json' }),
+            ...(hasJsonBody ? { 'Content-Type': 'application/json' } : {}),
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
             ...headers
           },

@@ -6,9 +6,7 @@ import { AgentDetails, Sessions, TeamDetails } from '@/types/os'
 
 // Helper function to create headers with optional auth token
 const createHeaders = (authToken?: string): HeadersInit => {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json'
-  }
+  const headers: HeadersInit = {}
 
   if (authToken) {
     headers['Authorization'] = `Bearer ${authToken}`
