@@ -3540,11 +3540,13 @@ export function TracesScreen() {
   const searchParams = useSearchParams()
   const [viewMode, setViewMode] = useState<'runs' | 'sessions'>('runs')
   const filterState = useFilterState('status')
+  const { clauses, setClauses } = filterState
   const [logicalOperator, setLogicalOperator] = useState<'AND' | 'OR'>('AND')
   const [searchResults, setSearchResults] = useState<AnyRecord[] | null>(null)
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null
   )
+  const searchParamsKey = searchParams.toString()
   const tracesQuery = useStudioQuery<AnyRecord[] | { data?: AnyRecord[] }>(
     ['traces', 'list'],
     '/traces'
@@ -3576,7 +3578,7 @@ export function TracesScreen() {
 
   const searchMutation = useMutation({
     mutationFn: async () => {
-      const activeClauses = filterState.clauses
+      const activeClauses = clauses
         .map((clause) => ({
           field: clause.field,
           operator: clause.operator,
@@ -3613,19 +3615,20 @@ export function TracesScreen() {
 
   useEffect(() => {
     const schema = filterSchemaQuery.data
-    if (!schema || filterState.clauses[0]?.field) return
+    if (!schema || clauses[0]?.field) return
     const firstField = Object.keys(schema.fields || schema.properties || {})[0]
     if (!firstField) return
-    filterState.setClauses([{ field: firstField, operator: 'EQ', value: '' }])
-  }, [filterState, filterSchemaQuery.data])
+    setClauses([{ field: firstField, operator: 'EQ', value: '' }])
+  }, [clauses, filterSchemaQuery.data, setClauses])
 
   useEffect(() => {
-    const requestedView = searchParams.get('view')
+    const params = new URLSearchParams(searchParamsKey)
+    const requestedView = params.get('view')
     const presetClauses = [
-      ['session_id', searchParams.get('session_id')],
-      ['run_id', searchParams.get('run_id')],
-      ['agent_id', searchParams.get('agent_id')],
-      ['status', searchParams.get('status')]
+      ['session_id', params.get('session_id')],
+      ['run_id', params.get('run_id')],
+      ['agent_id', params.get('agent_id')],
+      ['status', params.get('status')]
     ]
       .filter(
         (entry): entry is [string, string] =>
@@ -3641,7 +3644,7 @@ export function TracesScreen() {
       setViewMode(requestedView)
     }
 
-    setSelectedSessionId(searchParams.get('session_id'))
+    setSelectedSessionId(params.get('session_id'))
 
     if (!presetClauses.length) {
       setSearchResults(null)
@@ -3649,14 +3652,10 @@ export function TracesScreen() {
     }
 
     setLogicalOperator('AND')
-    filterState.setClauses(presetClauses)
+    setClauses(presetClauses)
 
     const groupBy =
-      requestedView === 'sessions'
-        ? 'session'
-        : searchParams.get('session_id')
-          ? 'run'
-          : 'run'
+      requestedView === 'sessions' ? 'session' : 'run'
 
     void request<AnyRecord>('/traces/search', {
       method: 'POST',
@@ -3682,7 +3681,7 @@ export function TracesScreen() {
           error instanceof Error ? error.message : 'Trace search failed'
         )
       })
-  }, [request, searchParams, filterState])
+  }, [request, searchParamsKey, setClauses])
 
   if (tracesQuery.isLoading) return <LoadingPanel label="Loading traces" />
   if (tracesQuery.error)
